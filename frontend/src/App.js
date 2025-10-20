@@ -45,7 +45,11 @@ function App() {
       setLoading(true);
       setResult(null);
 
-
+      const response = await axios.post(
+        "http://164.90.208.125:8000/process_pdf",
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
+      );
 
       setResult(response.data);
     } catch (error) {
