@@ -79,7 +79,7 @@ function App() {
 
       try {
         const response = await axios.post(
-          "http://164.90.208.125:8000/process_pdf",
+          "http://164.90.208.125:8000/process_pdf", 
           formData,
           { headers: { "Content-Type": "multipart/form-data" } }
         );
@@ -155,55 +155,51 @@ function App() {
         </button>
       </form>
 
-{/* Tabs */}
-{results.length > 0 && (
-  <div style={styles.tabs}>
-    {results.map((r) => {
-      // Shortened filename
-      const shortName =
-        r.fileName.length > 10 ? r.fileName.slice(0, 10) + "…" : r.fileName;
+      {/* Tabs */}
+      {results.length > 0 && (
+        <div style={styles.tabs}>
+          {results.map((r) => {
+            const shortName =
+              r.fileName.length > 10 ? r.fileName.slice(0, 10) + "…" : r.fileName;
 
-      return (
-        <div key={r.fileName} style={styles.tabWrapper}>
-          <button
-            style={{
-              ...styles.tabButton,
-              borderBottom:
-                activeTab === r.fileName ? "3px solid #4caf50" : "none",
-              fontWeight: activeTab === r.fileName ? "bold" : "normal",
-              position: "relative",
-              paddingRight: "1.5rem", // space for close button
-            }}
-            onClick={() => setActiveTab(r.fileName)}
-          >
-            {shortName}{" "}
-            {r.status === "processing" && <span className="spinner"></span>}
-
-            {r.status === "error" && " ❌"}
-            {r.status === "done" && "" /* No checkmark */}
-            {/* Close button inside tab */}
-            <span
-              style={styles.tabCloseButton}
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent activating tab
-                const newFiles = files.filter(f => f.name !== r.fileName);
-                const newResults = results.filter(res => res.fileName !== r.fileName);
-                setFiles(newFiles);
-                setResults(newResults);
-                if (activeTab === r.fileName) {
-                  setActiveTab(newResults[0]?.fileName || null);
-                }
-              }}
-            >
-              ×
-            </span>
-          </button>
+            return (
+              <div key={r.fileName} style={styles.tabWrapper}>
+                <button
+                  style={{
+                    ...styles.tabButton,
+                    borderBottom:
+                      activeTab === r.fileName ? "3px solid #4caf50" : "none",
+                    fontWeight: activeTab === r.fileName ? "bold" : "normal",
+                    position: "relative",
+                    paddingRight: "1.5rem",
+                  }}
+                  onClick={() => setActiveTab(r.fileName)}
+                >
+                  {shortName}{" "}
+                  {r.status === "processing" && <span className="spinner"></span>}
+                  {r.status === "error" && " ❌"}
+                  {r.status === "done" && ""}
+                  <span
+                    style={styles.tabCloseButton}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const newFiles = files.filter(f => f.name !== r.fileName);
+                      const newResults = results.filter(res => res.fileName !== r.fileName);
+                      setFiles(newFiles);
+                      setResults(newResults);
+                      if (activeTab === r.fileName) {
+                        setActiveTab(newResults[0]?.fileName || null);
+                      }
+                    }}
+                  >
+                    ×
+                  </span>
+                </button>
+              </div>
+            );
+          })}
         </div>
-      );
-    })}
-  </div>
-)}
-
+      )}
 
       {/* Active PDF details */}
       {activeResult && (
@@ -227,8 +223,8 @@ function App() {
               </section>
 
               <section style={styles.section}>
-                <h3>Detected Language</h3>
-                <p>{activeResult.data.detected_language}</p>
+                <h3>Product Name (English)</h3>
+                <p>{activeResult.data.product_name_english || "N/A"}</p>
               </section>
 
               <section style={styles.section}>
@@ -241,14 +237,12 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(activeResult.data.allergens).map(
-                      ([key, value]) => (
-                        <tr key={key}>
-                          <td style={styles.td}>{key}</td>
-                          <td style={styles.td}>{value ? "✅" : "❌"}</td>
-                        </tr>
-                      )
-                    )}
+                    {Object.entries(activeResult.data.allergens).map(([key, value]) => (
+                      <tr key={key}>
+                        <td style={styles.td}>{key}</td>
+                        <td style={styles.td}>{value ? "✅" : "❌"}</td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </section>
@@ -263,17 +257,34 @@ function App() {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.entries(
-                      activeResult.data.nutritional_values_per_100g
-                    ).map(([key, value]) => (
-                      <tr key={key}>
-                        <td style={styles.td}>{key}</td>
-                        <td style={styles.td}>{value}</td>
-                      </tr>
-                    ))}
+                    {Object.entries(activeResult.data.nutritional_values_per_100g).map(
+                      ([key, value]) => (
+                        <tr key={key}>
+                          <td style={styles.td}>{key}</td>
+                          <td style={styles.td}>{value}</td>
+                        </tr>
+                      )
+                    )}
                   </tbody>
                 </table>
               </section>
+/*
+              {/* DEBUG: Full JSON */}
+              <section style={styles.section}>
+                <h3>Full JSON Output (Debug)</h3>
+                <pre
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-all",
+                    backgroundColor: "#eee",
+                    padding: "1rem",
+                    borderRadius: "6px",
+                  }}
+                >
+                  {JSON.stringify(activeResult.data, null, 2)}
+                </pre>
+              </section>
+/*
             </div>
           )}
         </div>
@@ -340,7 +351,7 @@ const styles = {
     display: "flex",
     alignItems: "center",
     position: "relative",
-    paddingRight: "1.5rem", // space for close button
+    paddingRight: "1.5rem",
   },
   tabCloseButton: {
     position: "absolute",
@@ -387,7 +398,6 @@ const styles = {
     padding: "0.5rem",
     borderBottom: "1px solid #ddd",
   },
-
 };
 
 export default App;
