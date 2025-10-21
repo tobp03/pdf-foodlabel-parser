@@ -401,7 +401,7 @@ function App() {
   const [isChartJsLoaded, setIsChartJsLoaded] = useState(false);
 
   const inputRef = useRef(null);
-  const correctPassword = "admin123";
+  const correctPassword = "admin10";
   // Define the file size limit (5MB in bytes)
   const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; 
 
