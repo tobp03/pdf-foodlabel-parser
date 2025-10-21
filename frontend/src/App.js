@@ -348,7 +348,7 @@ const NutrientRadarChart = memo(({ results, isChartJsLoaded }) => {
     if (!isChartJsLoaded || results.filter(r => r.status === "done").length < 1) {
         return (
             <div style={{ textAlign: 'center', padding: '2rem', border: `1px dashed ${C.GB}`, borderRadius: '0.5rem', color: C.G }}>
-                {isChartJsLoaded ? "Upload and process at least one PDF to view the nutritional radar chart comparison." : "Loading chart libraries..."}
+                {isChartJsLoaded ? "Upload and process at least one PDF to view the nutritional chart comparison." : "Loading chart libraries..."}
             </div>
         );
     }
@@ -433,7 +433,7 @@ function App() {
       setIsLoggedIn(true);
       setLoginError("");
     } else {
-      setLoginError("Incorrect password. Try 'admin123'");
+      setLoginError("Incorrect password ");
       setPasswordInput("");
     }
   };
@@ -614,11 +614,11 @@ function App() {
         
         {/* Radar Chart Comparison Section */}
         <div style={{ backgroundColor: C.W, padding: '1.5rem', borderRadius: '0.75rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', border: '1px solid #f3f4f6', marginBottom: '1.5rem' }}>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: C.P, marginBottom: '0.75rem', borderBottom: '1px solid #dcfce7', paddingBottom: '0.5rem' }}>Nutritional Radar Comparison</h3>
+            <h3 style={{ fontSize: '1.25rem', fontWeight: '600', color: C.P, marginBottom: '0.75rem', borderBottom: '1px solid #dcfce7', paddingBottom: '0.5rem' }}>Nutrition Comparison</h3>
             {/* The component is memoized now to prevent unnecessary re-renders */}
             <NutrientRadarChart results={doneResults} isChartJsLoaded={isChartJsLoaded} /> 
             <p style={{marginTop: '1rem', fontSize: '0.875rem', color: C.G, textAlign: 'center'}}>
-                *The chart compares values scaled to the highest recorded value in each category (100%). Hover over points to see the **absolute raw values** in grams, milligrams, or kcal.
+                *Chart shows values scaled to each category's max (100%). Hover to see actual values in g, mg, or kcal.
             </p>
         </div>
 
