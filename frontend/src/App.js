@@ -501,7 +501,7 @@ function App() {
       formData.append("file", file);
 
       try {
-        const response = await axios.post("http://164.90.208.125:8000/process_pdf", formData, { headers: { "Content-Type": "multipart/form-data" } });
+        const response = await axios.post("/api/process_pdf", formData, { headers: { "Content-Type": "multipart/form-data" } });
         updatedResults[resultIndex].status = "done";
         updatedResults[resultIndex].data = response.data;
         updatedResults[resultIndex].error = null;
