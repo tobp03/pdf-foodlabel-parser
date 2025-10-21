@@ -41,16 +41,16 @@ async def process_pdf(file: UploadFile = File(...)):
     temp_path = f"temp_{file.filename}"
     with open(temp_path, "wb") as f:
         f.write(content)
+
+    try:
+        # Use utils functions
+        text = extract_pdf_text(temp_path)
+        text_clean = clean_text3(text)
+        ocr_text = extract_images_with_ocr(temp_path)
+
+        pdf_data = {"text": text_clean, "ocr": ocr_text}
+        json_output = extract_pdf_structured_json(str(pdf_data), API_KEY)
+        return json.loads(json_output)
     
-
-    # Use utils functions
-    text = extract_pdf_text(temp_path)
-    text_clean = clean_text3(text)
-
-    ocr_text = extract_images_with_ocr(temp_path)
-    
-    pdf_data = {"text": text_clean, "ocr": ocr_text}
-
-    json_output = extract_pdf_structured_json(str(pdf_data), API_KEY)
-
-    return json.loads(json_output)
+    finally:
+        os.remove(temp_path)
