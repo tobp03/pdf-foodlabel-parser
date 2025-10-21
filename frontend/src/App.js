@@ -402,6 +402,8 @@ function App() {
 
   const inputRef = useRef(null);
   const correctPassword = "admin123";
+  // Define the file size limit (5MB in bytes)
+  const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; 
 
   // --- CHART.JS SCRIPT LOADING EFFECT ---
   useEffect(() => {
@@ -444,12 +446,23 @@ function App() {
       (file) => !files.some((f) => f.name === file.name)
     );
 
-    const newResults = newFileObjects.map((file) => ({
-      fileName: file.name,
-      status: "pending",
-      data: null,
-      error: null,
-    }));
+    const newResults = newFileObjects.map((file) => {
+      // Check for file size during file selection/add
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        return {
+          fileName: file.name,
+          status: "error",
+          data: null,
+          error: `File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds the 5MB limit.`,
+        };
+      }
+      return {
+        fileName: file.name,
+        status: "pending",
+        data: null,
+        error: null,
+      };
+    });
 
     setFiles((prev) => [...prev, ...newFileObjects]);
     setResults((prev) => [...prev, ...newResults]);
@@ -475,7 +488,8 @@ function App() {
   // Sequential upload
   const handleUpload = async (e) => {
     e.preventDefault();
-    const filesToProcess = results.filter(r => r.status === "pending" || r.status === "error");
+    // Only filter for files that are pending or errored and are not already marked as file size error
+    const filesToProcess = results.filter(r => r.status === "pending" || (r.status === "error" && r.error !== `File size (${(files.find(f => f.name === r.fileName)?.size / (1024 * 1024)).toFixed(2)}MB) exceeds the 5MB limit.`));
     if (!filesToProcess.length || isUploading) return;
     
     setIsUploading(true);
@@ -496,6 +510,15 @@ function App() {
         setResults([...updatedResults]);
         continue;
       }
+      
+      // --- START: PDF Size Limit Check ---
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        updatedResults[resultIndex].status = "error";
+        updatedResults[resultIndex].error = `File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds the 5MB limit.`;
+        setResults([...updatedResults]);
+        continue;
+      }
+      // --- END: PDF Size Limit Check ---
 
       const formData = new FormData();
       formData.append("file", file);
@@ -567,8 +590,8 @@ function App() {
 
   const activeResult = results.find((r) => r.fileName === activeTab);
   const doneResults = results.filter(r => r.status === "done" && r.data);
-  // Calculate files that are pending or errored and need processing/re-processing
-  const filesToProcess = results.filter(r => r.status === "pending" || r.status === "error");
+  // Calculate files that are pending or errored (and are not size errors) and need processing/re-processing
+  const filesToProcess = results.filter(r => r.status === "pending" || (r.status === "error" && !r.error?.includes("exceeds the 5MB limit")));
   const processCount = filesToProcess.length;
 
 
@@ -589,7 +612,7 @@ function App() {
             <div style={{ ...S.dropZone(dragActive), marginBottom: '1rem' }} onClick={() => inputRef.current.click()}>
               <UploadIcon style={{ width: '2rem', height: '2rem', color: '#9ca3af', marginBottom: '0.5rem' }} />
               <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#4b5563', textAlign: 'center' }}>
-                Drag & drop PDF files here, or <span style={{ color: C.P, fontWeight: '600' }}>click to browse</span>.
+                Drag & drop PDF files (max 5MB) here, or <span style={{ color: C.P, fontWeight: '600' }}>click to browse</span>.
               </p>
               <input ref={inputRef} type="file" accept="application/pdf" multiple style={{ display: "none" }} onChange={handleFileChange} />
             </div>

@@ -51,7 +51,6 @@ async def process_pdf(file: UploadFile = File(...)):
     
     pdf_data = {"text": text_clean, "ocr": ocr_text}
 
-
     json_output = extract_pdf_structured_json(str(pdf_data), API_KEY)
 
     return json.loads(json_output)
