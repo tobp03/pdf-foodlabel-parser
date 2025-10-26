@@ -46,7 +46,7 @@ Extract JSON from the PDF text in this exact format:
     "Sodium": float or "NA"
   }
 }
-Respond only with valid JSON. Allergens: 1 if present, 0 if not. Nutrition: float or "NA"."product_name_english", should be clear and short. Do not add any other text.
+Respond only with valid JSON. Allergens: 1 if present, 0 if not. Notes: só = salt/sodium . Nutrition: float or "NA"."product_name_english", should be clear and short. Do not add any other text.
     """
 
     messages = [
