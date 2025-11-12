@@ -12,6 +12,7 @@ It consists of a **React frontend** for file upload and visualization, and a **F
 ### Access
 
 * **Live site:** [https://tobyp.fun](https://tobyp.fun)
+* Enter the password: "admin10"
 * **Local usage:** Requires Python 3 and Node.js installed.
 
 ### How to Use
