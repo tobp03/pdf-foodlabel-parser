@@ -5,15 +5,17 @@
 This project extracts **allergens** and **nutritional values** from PDFs of food labels and presents them in a structured format.
 It consists of a **React frontend** for file upload and visualization, and a **FastAPI backend** for PDF parsing and data extraction.
 
+[![Watch the video](https://img.youtube.com/vi/sY7aYVVWKRE/maxresdefault.jpg)](https://youtu.be/sY7aYVVWKRE)
+
+
+
 ---
 
 ## User Documentation
 
 ### Access
 
-* **Live site:** [https://tobyp.fun](https://tobyp.fun)
-* Enter the password: "admin10"
-* **Local usage:** Requires Python 3 and Node.js installed.
+* **Live site:** (Down at the moment)
 
 ### How to Use
 
